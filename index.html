@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d18"><title>MR XTORY EARN</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.0"></script>
+<style>
+:root{color-scheme:dark;--bg:#080d18;--panel:#111a2b;--line:#26344b;--muted:#91a1b9;--text:#f5f7fb;--accent:#9cf36b;--blue:#6ea8ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -20%,#1c3450 0,transparent 55%),var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;background:var(--accent);color:#10180d;font-weight:750}button.secondary{background:#202d42;color:var(--text);border:1px solid var(--line)}button:disabled{opacity:.5;cursor:not-allowed}.wrap{max-width:980px;margin:auto;padding:18px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0 24px}.brand{display:flex;gap:10px;align-items:center;font-weight:900;letter-spacing:.08em}.mark{width:38px;height:38px;border:2px solid var(--accent);border-radius:12px;display:grid;place-items:center;color:var(--accent)}.muted{color:var(--muted)}.hero{padding:26px 0 18px}.hero h1{font-size:clamp(32px,7vw,58px);line-height:1.03;margin:8px 0 14px;letter-spacing:-.04em}.hero h1 span{color:var(--accent)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.card{background:linear-gradient(145deg,#142037,#0e1727);border:1px solid var(--line);border-radius:18px;padding:18px;margin:12px 0}.card h2,.card h3{margin:0 0 10px}.field{display:grid;gap:6px;margin:12px 0}.field input,.field select,.field textarea{width:100%;background:#091221;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px}.field textarea{min-height:88px;resize:vertical}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.tabs button{flex:1;min-width:110px}.task{padding:15px 0;border-top:1px solid var(--line)}.task:first-child{border-top:0}.pill{display:inline-block;border:1px solid #38506b;border-radius:99px;padding:4px 9px;color:var(--accent);font-size:12px}.hidden{display:none!important}.notice{padding:12px;border-radius:12px;background:#172a24;color:#c6ffb1;margin:12px 0}.error{background:#351d26;color:#ffb8c4}.foot{padding:24px 0;color:var(--muted);font-size:12px;text-align:center}a{color:var(--blue)}@media(max-width:560px){.wrap{padding:14px}.top{padding-bottom:12px}.hero{padding-top:18px}}
+</style>
+</head>
+<body><div class="wrap">
+<header class="top"><div class="brand"><div class="mark">MX</div><div>MR XTORY <span style="color:var(--accent)">EARN</span></div></div><div id="authStatus" class="muted">Not signed in</div></header>
+<section class="hero"><div class="pill">MICROTASK MARKETPLACE</div><h1>Work smart.<br><span>Earn fairly.</span></h1><p class="muted">A task marketplace for surveys, research, data entry, transcription and usability testing. Rewards are subject to task approval and payout policy.</p></section>
+<div id="message" class="notice hidden"></div>
+<section id="authPanel" class="grid">
+ <div class="card"><h2>Create account</h2><p class="muted">Choose your account type. You can use one account for one role.</p>
+ <form id="signup"><div class="field"><label>Account type</label><select id="role"><option value="worker">Worker</option><option value="advertiser">Advertiser</option></select></div><div class="field"><label>Display name</label><input id="name" required maxlength="60" placeholder="Your name"></div><div class="field"><label>Email</label><input id="signupEmail" type="email" required autocomplete="email"></div><div class="field"><label>Password</label><input id="signupPass" type="password" required minlength="8" autocomplete="new-password"></div><button type="submit">Create account</button></form></div>
+ <div class="card"><h2>Welcome back</h2><p class="muted">Sign in to your secure account.</p><form id="login"><div class="field"><label>Email</label><input id="loginEmail" type="email" required autocomplete="email"></div><div class="field"><label>Password</label><input id="loginPass" type="password" required autocomplete="current-password"></div><button type="submit">Sign in</button></form><p class="muted" style="font-size:12px">Google sign-in will be enabled after OAuth credentials are configured in Supabase.</p></div>
+</section>
+<section id="appPanel" class="hidden">
+ <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><div class="pill" id="roleBadge">ACCOUNT</div><h2 id="hello">Your dashboard</h2><div class="muted" id="uid"></div></div><button class="secondary" id="logout">Sign out</button></div></div>
+ <nav class="tabs"><button class="secondary" data-tab="tasks">Explore tasks</button><button class="secondary" data-tab="mytasks">My activity</button><button class="secondary" data-tab="create" id="createTab">Post a task</button></nav>
+ <div id="tasksTab" class="card"><h2>Available tasks</h2><div id="taskList" class="muted">Loading tasks…</div></div>
+ <div id="mytasksTab" class="card hidden"><h2>My submissions</h2><div id="myActivity" class="muted">No activity loaded.</div></div>
+ <div id="createTabPanel" class="card hidden"><h2>Create a task</h2><form id="createTask"><div class="field"><label>Task title</label><input id="taskTitle" required maxlength="120"></div><div class="field"><label>Description</label><textarea id="taskDesc" required></textarea></div><div class="field"><label>Category</label><select id="taskCategory"><option>Survey</option><option>Research</option><option>Data entry</option><option>Transcription</option><option>Usability testing</option><option>Content tagging</option><option>Quality assurance</option></select></div><div class="field"><label>Reward per approved task (BDT)</label><input id="taskReward" type="number" min="1" step=".01" required></div><div class="field"><label>Available slots</label><input id="taskSlots" type="number" min="1" step="1" required></div><div class="field"><label>Proof instructions</label><textarea id="taskProof" required></textarea></div><button type="submit">Save as draft</button></form><p class="muted">New tasks are drafts and require admin review before publication.</p></div>
+ <div class="card"><h3>Wallet & payouts</h3><p class="muted">Balances and payouts are not enabled in this first build. Worker withdrawals and advertiser funding will be activated only after secure server-side payment verification is implemented.</p></div>
+</section>
+<div class="foot">MR XTORY EARN · Fair tasks, transparent review · No guaranteed earnings</div>
+</div>
+<script>
+const SUPABASE_URL='https://eontkxvuawjrbtgaiupd.supabase.co';
+const SUPABASE_KEY='sb_publishable_eOisGR-iFAwmbRhB13JIbw_cGvUzOkL';
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+function message(s,bad=false){$('message').textContent=s;$('message').classList.remove('hidden','error');if(bad)$('message').classList.add('error')}
+function money(n){return new Intl.NumberFormat('en-BD',{style:'currency',currency:'BDT'}).format(n)}
+async function refresh(){
+ const {data:{user}}=await db.auth.getUser();
+ if(!user){$('authPanel').classList.remove('hidden');$('appPanel').classList.add('hidden');$('authStatus').textContent='Not signed in';return}
+ const {data:p,error}=await db.from('profiles').select('uid,account_type,display_name').eq('id',user.id).single();
+ if(error){message('Could not load profile: '+error.message,true);return}
+ $('authPanel').classList.add('hidden');$('appPanel').classList.remove('hidden');$('authStatus').textContent='Signed in';
+ $('hello').textContent='Hello, '+p.display_name;$('uid').textContent='Your UID: '+p.uid;$('roleBadge').textContent=p.account_type.toUpperCase();
+ $('createTab').classList.toggle('hidden',p.account_type!=='advertiser');
+ await loadTasks();await loadActivity();
+}
+async function loadTasks(){
+ const {data,error}=await db.from('tasks').select('id,title,description,category,reward_bdt,slots_total,slots_filled').eq('status','published').order('created_at',{ascending:false}).limit(30);
+ if(error){$('taskList').textContent='Could not load tasks: '+error.message;return}
+ $('taskList').innerHTML=data.length?data.map(t=>'<div class="task"><div style="display:flex;justify-content:space-between;gap:10px"><strong>'+escapeHtml(t.title)+'</strong><span class="pill">'+money(t.reward_bdt)+'</span></div><p class="muted">'+escapeHtml(t.description)+'</p><small class="muted">'+escapeHtml(t.category)+' · '+Math.max(0,t.slots_total-t.slots_filled)+' slots left</small></div>').join(''):'No published tasks yet. Check again later.';
+}
+async function loadActivity(){
+ const {data,error}=await db.from('submissions').select('id,status,created_at,task_id,tasks(title)').order('created_at',{ascending:false}).limit(30);
+ $('myActivity').textContent=error?'No submissions yet.':data.length?data.map(x=>(x.tasks?.title||'Task')+' — '+x.status).join(' · '):'No submissions yet.';
+}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+$('signup').addEventListener('submit',async e=>{e.preventDefault();const {error}=await db.auth.signUp({email:$('signupEmail').value,password:$('signupPass').value,options:{data:{account_type:$('role').value,display_name:$('name').value}}});if(error)message(error.message,true);else message('Account request created. Check your email if confirmation is enabled, then sign in.');});
+$('login').addEventListener('submit',async e=>{e.preventDefault();const {error}=await db.auth.signInWithPassword({email:$('loginEmail').value,password:$('loginPass').value});if(error)message(error.message,true);else{message('Signed in successfully.');await refresh();}});
+$('logout').addEventListener('click',async()=>{await db.auth.signOut();await refresh();});
+$('createTask').addEventListener('submit',async e=>{e.preventDefault();const {data:{user}}=await db.auth.getUser();const {error}=await db.from('tasks').insert({advertiser_id:user.id,title:$('taskTitle').value,description:$('taskDesc').value,category:$('taskCategory').value,reward_bdt:Number($('taskReward').value),slots_total:Number($('taskSlots').value),proof_instructions:$('taskProof').value,status:'draft'});if(error)message(error.message,true);else{message('Task saved as draft. It is not public until approved.');e.target.reset();}});
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{['tasksTab','mytasksTab','createTabPanel'].forEach(x=>$(x).classList.add('hidden'));const target={tasks:'tasksTab',mytasks:'mytasksTab',create:'createTabPanel'}[b.dataset.tab];$(target).classList.remove('hidden');}));
+db.auth.onAuthStateChange(()=>setTimeout(refresh,0));refresh();
+</script></body></html>
