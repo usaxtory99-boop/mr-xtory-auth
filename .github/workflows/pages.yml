@@ -1,7 +1,7 @@
 name: Deploy MXA to GitHub Pages
 on:
   push:
-    branches: [mxa-anime-site]
+    branches: [main, mxa-anime-site]
   workflow_dispatch:
 permissions:
   contents: read
