@@ -96,11 +96,11 @@ window.renderAuth=()=>{
  modal('<div class="auth-shell"><div class="auth-art"><div class="auth-mark">MXA</div><div class="auth-art-copy"><span>YOUR NEXT WORLD STARTS HERE</span><h2>Every story.<br>One universe.</h2><p>Join MR XTORY ANIME and keep your watchlist, history and favourites in one place.</p></div><div class="auth-art-foot">MR XTORY ANIME · OFFICIAL MEMBER ACCESS</div></div><div class="auth-form"><div class="auth-top"><div class="auth-mini">MXA <span>MEMBER ACCESS</span></div><button class="close" onclick="closeModal()">×</button></div><div class="auth-heading"><div class="auth-kicker">'+(signup?'CREATE YOUR ACCOUNT':'WELCOME BACK')+'</div><h2>'+(signup?'Join the universe':'Sign in to MXA')+'</h2><p>'+(signup?'Create a free account to save your anime journey.':'Continue where your anime journey paused.')+'</p></div>'+switcher+'<div id="authNotice" class="auth-notice hidden" role="status"></div>'+(signup?'<div class="field"><label>DISPLAY NAME</label><input id="displayName" autocomplete="name" maxlength="40" placeholder="Your name"></div>':'')+identity+'<div class="field"><label>PASSWORD</label><div class="password-wrap"><input id="password" type="password" autocomplete="'+(signup?'new-password':'current-password')+'" placeholder="At least 8 characters"><button type="button" onclick="togglePassword()" aria-label="Show password">SHOW</button></div></div>'+(signup?'<div class="field"><label>CONFIRM PASSWORD</label><input id="passwordConfirm" type="password" autocomplete="new-password" placeholder="Re-enter your password"></div>':'')+'<div class="auth-actions"><button class="primary auth-submit" id="authSubmit" onclick="auth(\''+(signup?'signup':'signin')+'\')">'+(signup?'Create free account':'Sign in securely')+' <span>→</span></button>'+(signup?'':(phoneMode?'':'<button class="auth-link" onclick="forgotPassword()">Forgot password?</button>'))+'</div><div class="auth-switch">'+(signup?'Already have an account? <button onclick="openAuth(\'signin\')">Sign in</button>':'New to MXA? <button onclick="openAuth(\'signup\')">Create account</button>')+'</div><p class="auth-legal">By continuing, you agree to use MXA responsibly and only access content you are authorized to view.</p></div></div>');
 };
 window.togglePassword=()=>{const p=$('password');if(!p)return;p.type=p.type==='password'?'text':'password';};
-window.normalizeMxaPhone=(value)=>{let p=String(value||'').trim().replace(/[\\s()-]/g,'');if(/^01[3-9]\\d{8}$/.test(p))p='+88'+p;else if(/^8801[3-9]\\d{8}$/.test(p))p='+'+p;return p;};
+window.normalizeMxaPhone=(value)=>{let p=String(value||'').trim().replace(/[\s()-]/g,'');if(/^01[3-9]\d{8}$/.test(p))p='+88'+p;else if(/^8801[3-9]\d{8}$/.test(p))p='+'+p;return p;};
 window.auth=async mode=>{
  const phoneMode=window.authProvider==='phone',email=$('email')?.value.trim().toLowerCase(),phone=phoneMode?normalizeMxaPhone($('phone')?.value):null,password=$('password')?.value||'',name=$('displayName')?.value.trim()||'',confirmPass=$('passwordConfirm')?.value||'',btn=$('authSubmit');
- if(phoneMode){if(!/^\\+?[1-9]\\d{7,14}$/.test(phone||''))return authMessage('Enter a valid phone number with country code, e.g. +8801XXXXXXXXX.');}
- else if(!email||!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email))return authMessage('Please enter a valid email address.');
+ if(phoneMode){if(!/^\+?[1-9]\d{7,14}$/.test(phone||''))return authMessage('Enter a valid phone number with country code, e.g. +8801XXXXXXXXX.');}
+ else if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return authMessage('Please enter a valid email address.');
  if(password.length<8)return authMessage('Password must be at least 8 characters.');
  if(mode==='signup'&&password!==confirmPass)return authMessage('Passwords do not match.');
  if(mode==='signup'&&name.length<2)return authMessage('Please enter your display name.');
@@ -128,7 +128,7 @@ window.auth=async mode=>{
 window.verifyPhoneSignupOtp=async()=>{
  const phone=window.pendingPhone,token=$('phoneOtp')?.value.trim();
  if(!phone)return authMessage('Please restart phone signup.');
- if(!/^\\d{6}$/.test(token||''))return authMessage('Enter the 6-digit SMS code.');
+ if(!/^\d{6}$/.test(token||''))return authMessage('Enter the 6-digit SMS code.');
  const r=await db.auth.verifyOtp({phone,token,type:'sms'});
  if(r.error)return authMessage(r.error.message||'Phone verification failed.');
  window.pendingPhone=null;notify('Phone verified. Account created successfully.');await refreshUser();closeModal();
