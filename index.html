@@ -137,7 +137,7 @@ window.adminTab=async(tab,id=null)=>{
  }else if(tab==='genres'){
   const r=await db.from('genres').select('*').order('name');genres=r.data||[];
   box.innerHTML='<h3>Genre management</h3><div class="form-grid"><div class="field"><label>New genre</label><input id="newGenre" placeholder="Slice of Life"></div><div class="field"><button class="primary" onclick="addGenre()">Add genre</button></div></div>'+(genres.map(g=>'<div class="episode"><b style="flex:1">'+esc(g.name)+'</b><button class="secondary" onclick="deleteGenre(\''+g.id+'\')">Delete</button></div>').join(''));
- }else{
+ }else if(tab==='stats'){
   const [a,b,c,d]=await Promise.all([db.from('titles').select('id',{count:'exact',head:true}),db.from('episodes').select('id',{count:'exact',head:true}),db.from('profiles').select('id',{count:'exact',head:true}),db.from('video_sources').select('id',{count:'exact',head:true})]);
   box.innerHTML='<h3>Website overview</h3><div class="grid admin-stats"><div class="episode"><b>Titles</b><strong>'+(a.count||0)+'</strong></div><div class="episode"><b>Episodes</b><strong>'+(b.count||0)+'</strong></div><div class="episode"><b>Users</b><strong>'+(c.count||0)+'</strong></div><div class="episode"><b>Video sources</b><strong>'+(d.count||0)+'</strong></div></div><p class="muted">Live database counts.</p>';
  }else if(tab==='branding'){
