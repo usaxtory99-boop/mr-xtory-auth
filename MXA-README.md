@@ -1,3 +1,4 @@
+
 # MR XTORY ANIME (MXA)
 
 Mobile-first anime and movie streaming website.
@@ -30,3 +31,5 @@ Pushes to `mxa-anime-site` trigger `.github/workflows/pages.yml`. In repository 
 
 ## Free-tier note
 Supabase Free has storage and bandwidth limits. Video uploads are not unlimited; larger video hosting may require a different approved storage/streaming provider. No paid services should be enabled without the owner's explicit approval.
+
+Deployment check retriggered after Pages source configuration confirmation.
