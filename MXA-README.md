@@ -1,25 +1,32 @@
 # MR XTORY ANIME (MXA)
 
-Mobile-first anime catalog and playback website.
+Mobile-first anime and movie streaming website.
 
-## Included
-- Responsive dark/light interface with mobile bottom navigation
-- Supabase email/password auth
-- Published catalog, series/movie browsing, search, genres, details
-- Watchlist and watch history / progress
-- Admin Creator Studio for titles, seasons, episodes and authorized video sources
-- HLS and MP4 playback
-- GitHub Pages workflow
+## Website features
+- Responsive mobile-first layout with dark/light themes and five-item bottom navigation
+- Supabase email/password authentication
+- Published anime/movie catalog, search, genres, seasons and episodes
+- Watchlist, favorites and watch progress/history
+- Admin Creator Studio for catalog entries, seasons, episodes, posters, banners and thumbnails
+- Direct MP4/WebM/MOV/MKV uploads to the `anime-videos` Supabase Storage bucket (current bucket limit: 50 MB per file)
+- HLS/MP4 playback where the uploaded/source format is supported
+- GitHub Pages deployment workflow on branch `mxa-anime-site`
 
 ## Supabase project
-Project ref: lcpnlwqycroerxvbtsnp
+Project ref: `lcpnlwqycroerxvbtsnp`  
+Project URL: `https://lcpnlwqycroerxvbtsnp.supabase.co`
 
-The website uses only the public publishable key. Never add a Supabase service-role or secret key to client-side code.
+The browser uses only the Supabase publishable key. Never put a service-role or secret key in frontend code.
 
 ## First-time setup
-1. In Supabase Authentication → URL Configuration, add the deployed GitHub Pages URL to the allowed redirect URLs.
-2. Assign the first trusted admin account the `admin` role in `public.user_roles` from the Supabase SQL editor.
-3. Publish only content and video sources you own or are licensed to distribute.
+1. Create an account using the email connected to the authorized GitHub account; the configured signup trigger is intended to grant the first admin role.
+2. If that account existed before the trigger was configured, verify/assign its admin role in `public.user_roles` from the Supabase SQL editor.
+3. Add the final deployed website URL to Supabase Authentication → URL Configuration after deployment is confirmed.
+4. Google sign-in is not enabled until the Google provider is configured in Supabase.
+5. Upload and publish only videos, artwork and other content that you own or are licensed to distribute.
 
 ## Deployment
-GitHub Actions deploys the website when commits are pushed to `mxa-anime-site`. In repository Settings → Pages, select **GitHub Actions** as the source if required.
+Pushes to `mxa-anime-site` trigger `.github/workflows/pages.yml`. In repository Settings → Pages, select **GitHub Actions** as the source. A successful workflow and a confirmed Pages URL are required before calling the site live.
+
+## Free-tier note
+Supabase Free has storage and bandwidth limits. Video uploads are not unlimited; larger video hosting may require a different approved storage/streaming provider. No paid services should be enabled without the owner's explicit approval.
