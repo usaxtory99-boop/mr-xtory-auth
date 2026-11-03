@@ -107,11 +107,18 @@ exports.recordActivity = onCall({ region: "us-central1" }, async (request) => {
     const last = snap.data().lastActivityAt;
     const now = admin.firestore.Timestamp.now();
     if (!last || now.toMillis() - last.toMillis() >= 14000) {
+      const nextSeconds = Number(snap.data().activeSeconds || 0) + 15;
       tx.update(userRef, {
-        activeSeconds: admin.firestore.FieldValue.increment(15),
+        activeSeconds: nextSeconds,
         lastSeen: now,
         lastActivityAt: now
       });
+      tx.set(db.collection("leaderboard").doc(request.auth.uid), {
+        displayName: String(snap.data().displayName || "Anime fan").slice(0, 80),
+        username: String(snap.data().username || "").slice(0, 64),
+        activeSeconds: nextSeconds,
+        updatedAt: now
+      }, { merge: true });
     }
   });
   return { ok: true };
