@@ -36,7 +36,7 @@ A 10-digit code is generated when a Telegram user profile is created. Referral a
 3. Store the Telegram bot token as a Firebase secret: `firebase functions:secrets:set TELEGRAM_BOT_TOKEN`.
 4. Set authorized admin Telegram numeric IDs: `firebase functions:config:set` is not used by this starter; configure the `ADMIN_TELEGRAM_IDS` function parameter when prompted during deployment (comma-separated numeric Telegram IDs).
 5. Deploy: `firebase deploy --only functions,firestore:rules,storage`.
-6. Set the Telegram webhook to the deployed `telegramWebhook` HTTPS URL using Telegram's `setWebhook` API. Keep the bot token private.
+6. Set the Telegram webhook to the deployed `telegramWebhook` HTTPS URL using Telegram's `setWebhook` API and pass the same secret as `secret_token`. Keep both secrets private.
 7. In BotFather, configure the Mini App URL and menu button to the HTTPS-hosted `index.html` page.
 
 ### Bot commands
