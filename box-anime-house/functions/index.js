@@ -6,10 +6,11 @@ const crypto = require("crypto");
 
 admin.initializeApp();
 const db = admin.firestore();
-const bucket = admin.storage().bucket();
 const BOT_TOKEN = defineSecret("TELEGRAM_BOT_TOKEN");
 const WEBHOOK_SECRET = defineSecret("TELEGRAM_WEBHOOK_SECRET");
 const ADMIN_TELEGRAM_IDS = defineString("ADMIN_TELEGRAM_IDS", { default: "" });
+const CLOUDINARY_CLOUD_NAME = defineString("CLOUDINARY_CLOUD_NAME", { default: "" });
+const CLOUDINARY_UPLOAD_PRESET = defineString("CLOUDINARY_UPLOAD_PRESET", { default: "" });
 
 function verifyInitData(initData, botToken) {
   const params = new URLSearchParams(initData || "");
@@ -98,6 +99,19 @@ async function reply(chatId, text, token) {
   return telegram("sendMessage", { chat_id: chatId, text, parse_mode: "HTML", disable_web_page_preview: true }, token);
 }
 function parsePipe(text) { return text.split("|").map(x => x.trim()); }
+async function uploadToCloudinary(buffer, filename, mimeType) {
+  const cloud = CLOUDINARY_CLOUD_NAME.value();
+  const preset = CLOUDINARY_UPLOAD_PRESET.value();
+  if (!cloud || !preset) throw new Error("Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME and CLOUDINARY_UPLOAD_PRESET.");
+  const form = new FormData();
+  form.append("file", new Blob([buffer], { type: mimeType || "video/mp4" }), filename);
+  form.append("upload_preset", preset);
+  form.append("folder", "box-anime-house/episodes");
+  const response = await fetch("https://api.cloudinary.com/v1_1/" + encodeURIComponent(cloud) + "/video/upload", { method: "POST", body: form });
+  const result = await response.json();
+  if (!response.ok || !result.secure_url) throw new Error(result.error?.message || "Cloudinary upload failed.");
+  return result.secure_url;
+}
 
 exports.recordActivity = onCall({ region: "us-central1" }, async (request) => {
   if (!request.auth) throw new HttpsError("unauthenticated", "Sign in first.");
@@ -199,11 +213,7 @@ exports.telegramWebhook = onRequest({
         return res.status(200).send("ok");
       }
       const safeName = Date.now() + "_" + fileId.replace(/[^a-zA-Z0-9_-]/g, "") + ".mp4";
-      const storagePath = "episodes/" + animeId + "/" + safeName;
-      const file = bucket.file(storagePath);
-      await file.save(bytes, { metadata: { contentType: message.video.mime_type || "video/mp4", metadata: { uploadedByTelegramId: senderId } } });
-      await file.makePublic();
-      const videoUrl = "https://storage.googleapis.com/" + bucket.name + "/" + encodeURIComponent(storagePath).replace(/%2F/g, "/");
+      const videoUrl = await uploadToCloudinary(bytes, safeName, message.video.mime_type || "video/mp4");
       const oldEpisodes = animeSnap.data().episodes || [];
       oldEpisodes.push({ title: episodeTitle.slice(0, 120), videoUrl, createdAt: new Date().toISOString() });
       await animeRef.update({ episodes: oldEpisodes, updatedAt: admin.firestore.FieldValue.serverTimestamp() });
