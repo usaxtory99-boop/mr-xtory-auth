@@ -8,6 +8,7 @@ admin.initializeApp();
 const db = admin.firestore();
 const bucket = admin.storage().bucket();
 const BOT_TOKEN = defineSecret("TELEGRAM_BOT_TOKEN");
+const WEBHOOK_SECRET = defineSecret("TELEGRAM_WEBHOOK_SECRET");
 const ADMIN_TELEGRAM_IDS = defineString("ADMIN_TELEGRAM_IDS", { default: "" });
 
 function verifyInitData(initData, botToken) {
@@ -125,12 +126,13 @@ exports.recordActivity = onCall({ region: "us-central1" }, async (request) => {
 });
 
 exports.telegramWebhook = onRequest({
-  secrets: [BOT_TOKEN],
+  secrets: [BOT_TOKEN, WEBHOOK_SECRET],
   region: "us-central1",
   timeoutSeconds: 300,
   memory: "1GiB"
 }, async (req, res) => {
   if (req.method !== "POST") return res.status(405).send("POST only");
+  if (req.get("X-Telegram-Bot-Api-Secret-Token") !== WEBHOOK_SECRET.value()) return res.status(401).send("Unauthorized");
   const token = BOT_TOKEN.value();
   try {
     const update = req.body || {};
