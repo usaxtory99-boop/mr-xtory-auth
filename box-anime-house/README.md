@@ -29,3 +29,22 @@ The starter increments visible-session activity periodically. A production ranki
 
 ## Referral
 A 10-digit code is generated when a Telegram user profile is created. Referral attribution must be finalized server-side to prevent self-referrals and duplicate rewards.
+
+## Cloud Functions and Telegram bot deployment
+1. Install Firebase CLI, sign in, and select the Firebase project: `firebase login` then `firebase use YOUR_PROJECT_ID`.
+2. From this folder, install function dependencies: `cd functions && npm install && cd ..`.
+3. Store the Telegram bot token as a Firebase secret: `firebase functions:secrets:set TELEGRAM_BOT_TOKEN`.
+4. Set authorized admin Telegram numeric IDs: `firebase functions:config:set` is not used by this starter; configure the `ADMIN_TELEGRAM_IDS` function parameter when prompted during deployment (comma-separated numeric Telegram IDs).
+5. Deploy: `firebase deploy --only functions,firestore:rules,storage`.
+6. Set the Telegram webhook to the deployed `telegramWebhook` HTTPS URL using Telegram's `setWebhook` API. Keep the bot token private.
+7. In BotFather, configure the Mini App URL and menu button to the HTTPS-hosted `index.html` page.
+
+### Bot commands
+- `/help` — show admin commands.
+- `/new Title | Year | Genre | Poster URL | Description` — publish an anime and return its Firestore document ID.
+- Send a video with caption `/episode ANIME_DOCUMENT_ID | Episode title` — upload and publish an episode.
+
+The Telegram Bot API cloud download route is limited to small uploads (this starter caps it at 20 MB). For bigger videos, use Web Admin upload within the configured limit or a dedicated video CDN. Do not store the bot token in GitHub or any browser JavaScript.
+
+### Grant the first web admin
+Create the admin's Firebase Authentication account, copy its Firebase Auth UID, then run the trusted Admin SDK script in `scripts/grant-admin.js` using Application Default Credentials. Never grant admin claims from the browser.
