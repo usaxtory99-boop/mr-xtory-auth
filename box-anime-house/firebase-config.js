@@ -10,3 +10,5 @@ window.FIREBASE_CONFIG = {
   measurementId: "G-KN6B14RZPG"
 };
 window.BAH_BOT_USERNAME = "YOUR_TELEGRAM_BOT_USERNAME";
+// Public identifiers for the unsigned Cloudinary upload preset (not secrets).
+window.BAH_CLOUDINARY = { cloudName: "YOUR_CLOUDINARY_CLOUD_NAME", uploadPreset: "YOUR_UNSIGNED_UPLOAD_PRESET" };
