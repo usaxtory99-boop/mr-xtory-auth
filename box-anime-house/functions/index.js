@@ -202,7 +202,11 @@ exports.telegramWebhook = onRequest({
         await reply(chatId, "Anime ID not found. Create it with /new first.", token);
         return res.status(200).send("ok");
       }
-      if (Number(message.video.file_size || 0) > 20 * 1024 * 1024) {\n        await reply(chatId, "This Telegram bot upload route currently supports videos up to 20 MB. Use the Web Admin upload or a dedicated video CDN for larger files.", token);\n        return res.status(200).send("ok");\n      }\n      const fileId = message.video.file_id;
+      if (Number(message.video.file_size || 0) > 20 * 1024 * 1024) {
+        await reply(chatId, "Telegram Bot API cloud downloads are limited here to 20 MB. Upload larger files through the Web Admin instead.", token);
+        return res.status(200).send("ok");
+      }
+      const fileId = message.video.file_id;
       const fileInfo = await telegram("getFile", { file_id: fileId }, token);
       const fileUrl = "https://api.telegram.org/file/bot" + token + "/" + fileInfo.file_path;
       const download = await fetch(fileUrl);
