@@ -18,6 +18,10 @@ service cloud.firestore {
         allow read, write: if signedIn() && (request.auth.uid == uid || isAdmin());
       }
     }
+    match /leaderboard/{uid} {
+      allow read: if true;
+      allow write: if false;
+    }
     match /referrals/{referralId} {
       allow read: if isAdmin();
       allow create: if signedIn() && request.resource.data.inviteeUid == request.auth.uid;
