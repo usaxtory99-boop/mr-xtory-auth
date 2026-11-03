@@ -1,11 +1,12 @@
-// Copy your Firebase Web App config from Firebase Console > Project settings > Your apps.
-// Replace the placeholders below. Firebase web config is public; never put service-account keys here.
+// BOX ANIME HOUSE Firebase Web App configuration.
+// Web config is public; never place service-account credentials or bot tokens here.
 window.FIREBASE_CONFIG = {
-  apiKey: "YOUR_FIREBASE_WEB_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_FIREBASE_APP_ID"
+  apiKey: "AIzaSyDiHJ9QlpN9GdC5fRsd1H_9qZw7SD0FdZI",
+  authDomain: "mr-xtory-anime-e9ef2.firebaseapp.com",
+  projectId: "mr-xtory-anime-e9ef2",
+  storageBucket: "mr-xtory-anime-e9ef2.firebasestorage.app",
+  messagingSenderId: "230866279381",
+  appId: "1:230866279381:web:43a1cf7b5248a9b60f7b5c",
+  measurementId: "G-KN6B14RZPG"
 };
 window.BAH_BOT_USERNAME = "YOUR_TELEGRAM_BOT_USERNAME";
